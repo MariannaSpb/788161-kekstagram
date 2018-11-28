@@ -2,6 +2,9 @@
 var PHOTOS_QUANTITY = 25;
 var MIN_LIKES_SUM = 15;
 var MAX_LIKES_SUM = 200;
+var MIN_AVATAR_URL = 1;
+var MAX_AVATAR_URL = 6;
+var AVATAR_COUNT = 6;
 var COMMENTS = [
   'Всё отлично!',
   'В целом всё неплохо. Но не всё.',
@@ -19,10 +22,7 @@ var DESCRIPTIONS = [
   'Не обижайте всех словами......',
   'Вот это тачка!'
 ];
-var pictureTemplateElement = document.querySelector('#picture').content;
-var picturesElement = document.querySelector('.pictures');
-var bigPictureElement = document.querySelector('.big-picture');
-var photos = [];
+
 
 // функция генерации случайного элемента массива
 var getRandomElement = function (array) {
@@ -31,6 +31,7 @@ var getRandomElement = function (array) {
   return array[randomElement];
 }
 
+
 // функция генерации данных из заданного диапазона
 var getRandomInteger = function (min, max) {
   var randomInteger = Math.floor(Math.random() * (max - min + 1) + min);
@@ -38,34 +39,59 @@ var getRandomInteger = function (min, max) {
   return randomInteger;
 }
 
-var shuffleArray = function (array) { //тасование массива
-  for (var i = array.length - 1; i > 0; i--) {
-    var j = Math.floor(Math.random() * (i + 1));
-    var temp = array[i];
-    array[i] = array[j];
-    array[j] = temp;
-  }
-
-  return array
-};
-
-
-// var getRandomComments = function (array) { //функция создания коммента
-//   var comments = [];
-//   }
-//   return comments;
-// };
-
-
-var generatePhotos = function () {
-  for (var i = 1; i <= 25; i++) {
-    photos.push({
-      imageUrl: 'photos/' + i + '.jpg', //rl, строка — адрес картинки вида photos/{{i}}.jpg
-      likes: getRandomInteger(MIN_LIKES_SUM, MAX_LIKES_SUM),
-      description: getRandomElement[DESCRIPTIONS],
-    }
-    );
-  }
+//рандомим комменты
+var generateRandomComments = function () {
+  var randomComment = Math.floor(Math.random() * COMMENTS.length);
+  return COMMENTS[randomComment];
 }
 
-//Создайте массив, состоящий из 25 сгенерированных JS объектов
+var publications = [];
+for (var i = 0; i < PHOTOS_QUANTITY; i++) {
+  var publication = {
+    comments: getRandomElement(COMMENTS),
+    description: getRandomElement(DESCRIPTIONS),
+    url: 'photos/' + (i + 1) + '.jpg',
+    likes: getRandomInteger(MIN_LIKES_SUM, MAX_LIKES_SUM)
+
+  }
+  publications.push(publication)
+}
+
+console.log(publications)
+
+
+var pictureTemplate = document.querySelector('#picture').content.querySelector('.picture');
+var picturesBlock = document.querySelector('.pictures');
+var bigPicture = document.querySelector('.big-picture');
+var socialCommentList = document.querySelector('.social__comments');
+var socialСommentCount = bigPicture.querySelector('.social__comment-count');
+var loadComments = document.querySelector('.comments-loader');
+
+
+var fragment = document.createDocumentFragment();
+for (var i = 0; i < publications.length; i++) {
+  var photoElement = pictureTemplate.cloneNode(true);
+  photoElement.querySelector('.picture__likes').textContent = publications[i].likes;
+  photoElement.querySelector('.picture__comments').textContent = publications[i].comments;
+  photoElement.querySelector('.picture__img').src = publications[i].url;
+
+  fragment.appendChild(photoElement);
+}
+
+picturesBlock.appendChild(fragment);
+
+bigPicture.classList.remove('hidden');
+bigPicture.querySelector('img').src = publications[i].url;
+bigPicture.querySelector('.comments-count').textContent = publications[i].comments;
+
+// var shuffleArray = function (array) { //тасование массива
+//   for (var i = array.length - 1; i > 0; i--) {
+//     var j = Math.floor(Math.random() * (i + 1));
+//     var temp = array[i];
+//     array[i] = array[j];
+//     array[j] = temp;
+//   }
+
+//   return array;
+// };
+
