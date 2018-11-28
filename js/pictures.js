@@ -23,7 +23,6 @@ var DESCRIPTIONS = [
   'Вот это тачка!'
 ];
 
-
 // функция генерации случайного элемента массива
 var getRandomElement = function (array) {
   var randomElement = Math.floor(Math.random() * array.length);
@@ -68,6 +67,7 @@ var socialСommentCount = bigPicture.querySelector('.social__comment-count');
 var loadComments = document.querySelector('.comments-loader');
 
 
+
 var fragment = document.createDocumentFragment();
 for (var i = 0; i < publications.length; i++) {
   var photoElement = pictureTemplate.cloneNode(true);
@@ -79,8 +79,8 @@ for (var i = 0; i < publications.length; i++) {
 }
 
 picturesBlock.appendChild(fragment);
-
-bigPicture.classList.remove('hidden');
+пше
+// bigPicture.classList.remove('hidden');
 bigPicture.querySelector('img').src = publications[i].url;
 bigPicture.querySelector('.comments-count').textContent = publications[i].comments;
 
