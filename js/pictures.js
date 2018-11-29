@@ -47,7 +47,7 @@ var generateRandomComments = function () {
 var publications = [];
 for (var i = 0; i < PHOTOS_QUANTITY; i++) {
   var publication = {
-    comments: getRandomElement(COMMENTS),
+    comments: getRandomInteger(1, COMMENTS.length),
     description: getRandomElement(DESCRIPTIONS),
     url: 'photos/' + (i + 1) + '.jpg',
     likes: getRandomInteger(MIN_LIKES_SUM, MAX_LIKES_SUM)
@@ -79,10 +79,10 @@ for (var i = 0; i < publications.length; i++) {
 }
 
 picturesBlock.appendChild(fragment);
-пше
+
 // bigPicture.classList.remove('hidden');
-bigPicture.querySelector('img').src = publications[i].url;
-bigPicture.querySelector('.comments-count').textContent = publications[i].comments;
+// bigPicture.querySelector('img').src = publications[i].url;
+// bigPicture.querySelector('.comments-count').textContent = publications[i].comments;
 
 // var shuffleArray = function (array) { //тасование массива
 //   for (var i = array.length - 1; i > 0; i--) {
