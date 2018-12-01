@@ -26,18 +26,14 @@ var picturesBlock = document.querySelector('.pictures');
 var socialCommentList = document.querySelector('.social__comments');
 var socialСommentCount = document.querySelector('.social__comment-count');
 var loadComments = document.querySelector('.comments-loader');
+var bigPicture = document.querySelector('.big-picture');
 
-
-// функция генерации данных из заданного диапазона
 var getRandomInteger = function (min, max) {
-  var randomInteger = Math.floor(Math.random() * (max - min + 1) + min);
-  return randomInteger;
+  return Math.floor(Math.random() * (max - min) + min);
 };
 
-// функция генерации случайного элемента массива
 var getRandomElement = function (array) {
-  var randomElement = Math.floor(Math.random() * array.length);
-  return array[randomElement];
+  return array[getRandomInteger(0, array.length)];
 };
 
 var generateComments = function (count) {
@@ -48,21 +44,22 @@ var generateComments = function (count) {
   return pictureComments;
 };
 
-var publications = [];
-for (var i = 0; i < PHOTOS_QUANTITY; i++) {
-  var count = getRandomInteger(1, 2);
-  var publication = {
-    // Это массив. Напиши специальную функцию, которая на вход будет получать число count, а на выходе будет массив из count элементов.
-    comments: generateComments(count),
-    description: getRandomElement(DESCRIPTIONS),
-    url: 'photos/' + (i + 1) + '.jpg',
-    likes: getRandomInteger(MIN_LIKES_SUM, MAX_LIKES_SUM)
+var renderPublication = function (count) {
+  var publications = [];
+  for (var i = 0; i < count; i++) {
+    var publication = {
+      comments: generateComments(getRandomInteger(1, 3)),
+      description: getRandomElement(DESCRIPTIONS),
+      url: 'photos/' + (i + 1) + '.jpg',
+      likes: getRandomInteger(MIN_LIKES_SUM, MAX_LIKES_SUM + 1)
 
-  };
-  publications.push(publication);
-}
+    };
+    publications.push(publication);
+  }
+  return publications;
+};
 
-var renderPhotos = function (photo) {
+var createPhotoElement = function (photo) {
   var photoElement = pictureTemplate.cloneNode(true);
   photoElement.querySelector('.picture__img').setAttribute('src', photo.url);
   photoElement.querySelector('.picture__comments').textContent = photo.comments.length;
@@ -71,28 +68,29 @@ var renderPhotos = function (photo) {
   return photoElement;
 };
 
-var getUsersPhotos = function (array) {
+var getUsersPhotos = function (publications) {
   var fragment = document.createDocumentFragment();
-  for (var j = 0; j < array.length; j++) {
-    fragment.appendChild(renderPhotos(array[j]));
+  for (var i = 0; i < publications.length; i++) {
+    fragment.appendChild(createPhotoElement(publications[i]));
   }
   return fragment;
 };
 
-picturesBlock.appendChild(getUsersPhotos(publications));
-
-var showBigPicture = function () {
-  var bigPicture = document.querySelector('.big-picture');
+var showBigPicture = function (publication) {
   bigPicture.classList.remove('hidden');
-  bigPicture.querySelector('.big-picture__img img').setAttribute('src', publications[0].url);
-  bigPicture.querySelector('.likes-count').textContent = publications[0].likes;
-  bigPicture.querySelector('.comments-count').textContent = publications[0].comments.length;
-  bigPicture.querySelector('.social__caption').textContent = publications[0].description;
-  var commentItem = '<li class="social__comment"><img class="social__picture" src="img/avatar-' + getRandomInteger(MIN_AVATAR_URL, MAX_AVATAR_URL) + '.svg" alt="Аватар комментатора фотографии"width="35" height="35"><p class="social__text">' + publications[0].comments + '</p></li>';
+  bigPicture.querySelector('.big-picture__img img').setAttribute('src', publication.url);
+  bigPicture.querySelector('.likes-count').textContent = publication.likes;
+  bigPicture.querySelector('.comments-count').textContent = publication.comments.length;
+  bigPicture.querySelector('.social__caption').textContent = publication.description;
+  var commentItem = '<li class="social__comment"><img class="social__picture" src="img/avatar-' + getRandomInteger(MIN_AVATAR_URL, MAX_AVATAR_URL) + '.svg" alt="Аватар комментатора фотографии"width="35" height="35"><p class="social__text">' + publication.comments + '</p></li>';
+
+  socialСommentCount.classList.add('visually-hidden');
+  loadComments.classList.add('visually-hidden');
+
   socialCommentList.insertAdjacentHTML('afterBegin', commentItem);
 };
-showBigPicture();
 
+var publications = renderPublication(PHOTOS_QUANTITY);
+picturesBlock.appendChild(getUsersPhotos(publications));
 
-socialСommentCount.classList.add('visually-hidden');
-loadComments.classList.add('visually-hidden');
+showBigPicture(publications[0]);
