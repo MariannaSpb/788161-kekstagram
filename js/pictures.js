@@ -93,4 +93,73 @@ var showBigPicture = function (publication) {
 var publications = renderPublication(PHOTOS_QUANTITY);
 picturesBlock.appendChild(getUsersPhotos(publications));
 
-showBigPicture(publications[0]);
+// showBigPicture(publications[0]);
+// showBigPicture();
+
+
+
+// ----------module4--------------
+var ESC_KEYCODE = 27;
+var bigPictureCancel = bigPicture.querySelector('.big-picture__cancel'); //кнопка закрытия фотки
+var uploadFile = document.querySelector('#upload-file'); //input type file
+var imgUploadOverlay = document.querySelector('.img-upload__overlay');//оверлей с фоткой после change input type file
+var imgUploadCancel = document.querySelector('.img-upload__cancel'); //кнопка закрытия формы
+var effectsList = picturesBlock.querySelector('.effects__list'); //блок с фильтрами
+var currentEffect = document.querySelector('.img-upload__preview img');
+
+
+var keyCloseBigPicture = function (evt) {
+  if (evt.keyCode === ESC_KEYCODE) {
+    closeBigPicture();
+  }
+};
+
+var closeBigPicture = function () {
+  bigPicture.classList.add('hidden');
+  document.removeEventListener('keydown', keyCloseBigPicture);
+};
+
+
+var showBigPicture = function () {
+  bigPicture.classList.remove('hidden');
+  // document.body.classList.add('modal-open');
+  document.addEventListener('keydown', keyCloseBigPicture);
+};
+
+showBigPicture();
+bigPictureCancel.addEventListener('click', closeBigPicture);
+
+
+
+//открытие-закрытие формочки
+
+uploadFile.addEventListener("change", function () {
+  imgUploadOverlay.classList.remove('hidden')
+});
+
+imgUploadCancel.addEventListener('click', function () {
+  imgUploadOverlay.classList.add('hidden')
+} )
+
+
+document.addEventListener('keydown', function (evt) {
+  if (evt.keyCode === ESC_KEYCODE) {
+    imgUploadOverlay.classList.add('hidden');
+  }
+});
+
+
+var pictures = document.querySelectorAll('.picture');
+
+var clickPicture = function (count) {
+  pictures[count].addEventListener('click', function () {
+    showBigPicture(count);
+    document.querySelector('body').classList.add('modal-open');
+  });
+};
+
+for (var k = 0; k < pictures.length; k++) {
+  var count = k;
+  clickPicture(count);
+}
+
