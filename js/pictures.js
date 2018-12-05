@@ -76,6 +76,8 @@ var getUsersPhotos = function (publications) {
   return fragment;
 };
 
+
+
 var showBigPicture = function (publication) {
   bigPicture.classList.remove('hidden');
   bigPicture.querySelector('.big-picture__img img').setAttribute('src', publication.url);
@@ -98,6 +100,10 @@ picturesBlock.appendChild(getUsersPhotos(publications));
 
 
 
+
+
+
+
 // ----------module4--------------
 var ESC_KEYCODE = 27;
 var bigPictureCancel = bigPicture.querySelector('.big-picture__cancel'); //кнопка закрытия фотки
@@ -105,7 +111,7 @@ var uploadFile = document.querySelector('#upload-file'); //input type file
 var imgUploadOverlay = document.querySelector('.img-upload__overlay');//оверлей с фоткой после change input type file
 var imgUploadCancel = document.querySelector('.img-upload__cancel'); //кнопка закрытия формы
 var effectsList = picturesBlock.querySelector('.effects__list'); //блок с фильтрами
-var currentEffect = document.querySelector('.img-upload__preview img');
+
 
 
 var keyCloseBigPicture = function (evt) {
@@ -134,7 +140,8 @@ bigPictureCancel.addEventListener('click', closeBigPicture);
 //открытие-закрытие формочки
 
 uploadFile.addEventListener("change", function () {
-  imgUploadOverlay.classList.remove('hidden')
+  imgUploadOverlay.classList.remove('hidden');
+  uploadFileField.value = '';
 });
 
 imgUploadCancel.addEventListener('click', function () {
@@ -149,17 +156,69 @@ document.addEventListener('keydown', function (evt) {
 });
 
 
+
+
+
+
+// var pictures = document.querySelectorAll('.picture');
+
+// var clickPicture = function () {
+//   for (var i = 0; i < pictures.length; i++) {
+//     pictures[i].addEventListener('click', showBigPicture);
+// }
+// };
+
+// clickPicture();
+
+
+
 var pictures = document.querySelectorAll('.picture');
 
 var clickPicture = function (count) {
   pictures[count].addEventListener('click', function () {
     showBigPicture(count);
+
     document.querySelector('body').classList.add('modal-open');
   });
+
 };
 
-for (var k = 0; k < pictures.length; k++) {
-  var count = k;
+for (var i = 0; i < pictures.length; i++) {
+  var count = i;
   clickPicture(count);
 }
 
+// clickPicture(count);
+// showBigPicture(pictures[count]);
+
+
+
+
+
+// см. https://www.w3schools.com/jsref/prop_style_filter.asp
+
+var currentEffect = document.querySelector('.img-upload__preview img');
+
+document.querySelector('.effects__preview--chrome').addEventListener('click', function () {
+  currentEffect.style.filter = 'grayscale(1)';
+});
+
+document.querySelector('.effects__preview--sepia').addEventListener('click', function () {
+  currentEffect.style.filter = 'sepia(1)';
+});
+
+document.querySelector('.effects__preview--marvin').addEventListener('click', function () {
+  currentEffect.style.filter = 'invert(100%)';
+});
+
+document.querySelector('.effects__preview--phobos').addEventListener('click', function () {
+  currentEffect.style.filter = 'blur(5px)';
+});
+
+document.querySelector('.effects__preview--heat').addEventListener('click', function () {
+  currentEffect.style.filter = 'brightness(3)';
+});
+
+document.querySelector('.effects__preview--none').addEventListener('click', function () {
+  currentEffect.style.filter = 'none';
+});
