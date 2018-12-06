@@ -27,6 +27,8 @@ var socialCommentList = document.querySelector('.social__comments');
 var socialСommentCount = document.querySelector('.social__comment-count');
 var loadComments = document.querySelector('.comments-loader');
 var bigPicture = document.querySelector('.big-picture');
+var body = document.querySelector('body');
+
 
 var getRandomInteger = function (min, max) {
   return Math.floor(Math.random() * (max - min) + min);
@@ -59,14 +61,24 @@ var renderPublication = function (count) {
   return publications;
 };
 
-var createPhotoElement = function (photo) {
+// Так, там надо просто, когда ты создаёшь елемент, внутри функции,
+// перед ретурном надо повесить обработчик, внутри которого, ты вызываешь свою функцию показатьБигПикча.
+
+var createPhotoElement = function (publication) {
   var photoElement = pictureTemplate.cloneNode(true);
-  photoElement.querySelector('.picture__img').setAttribute('src', photo.url);
-  photoElement.querySelector('.picture__comments').textContent = photo.comments.length;
-  photoElement.querySelector('.picture__likes').textContent = photo.likes;
+  photoElement.querySelector('.picture__img').setAttribute('src', publication.url);
+  photoElement.querySelector('.picture__comments').textContent = publication.comments.length;
+  photoElement.querySelector('.picture__likes').textContent = publication.likes;
+
+ // обработчик для создания большой фотографии
+ photoElement.addEventListener('click', function () {
+ showBigPicture(publication);
+})
 
   return photoElement;
 };
+
+
 
 var getUsersPhotos = function (publications) {
   var fragment = document.createDocumentFragment();
@@ -80,6 +92,7 @@ var getUsersPhotos = function (publications) {
 
 var showBigPicture = function (publication) {
   bigPicture.classList.remove('hidden');
+ body.classList.add('modal-open');
   bigPicture.querySelector('.big-picture__img img').setAttribute('src', publication.url);
   bigPicture.querySelector('.likes-count').textContent = publication.likes;
   bigPicture.querySelector('.comments-count').textContent = publication.comments.length;
@@ -90,23 +103,28 @@ var showBigPicture = function (publication) {
   loadComments.classList.add('visually-hidden');
 
   socialCommentList.insertAdjacentHTML('afterBegin', commentItem);
+
+
+  var bigPictureCancel = bigPicture.querySelector('.big-picture__cancel');
+  var closeBigPicture = function () {
+    bigPicture.classList.add('hidden');
+  };
+  bigPictureCancel.addEventListener('click', closeBigPicture);
+//сюда же функцию закрытия фотографии
 };
 
 var publications = renderPublication(PHOTOS_QUANTITY);
 picturesBlock.appendChild(getUsersPhotos(publications));
 
 // showBigPicture(publications[0]);
-// showBigPicture();
-
-
-
-
+showBigPicture(publication);
 
 
 
 // ----------module4--------------
 var ESC_KEYCODE = 27;
-var bigPictureCancel = bigPicture.querySelector('.big-picture__cancel'); //кнопка закрытия фотки
+var ENTER_KEYCODE = 13;
+// var bigPictureCancel = bigPicture.querySelector('.big-picture__cancel'); //кнопка закрытия фотки
 var uploadFile = document.querySelector('#upload-file'); //input type file
 var imgUploadOverlay = document.querySelector('.img-upload__overlay');//оверлей с фоткой после change input type file
 var imgUploadCancel = document.querySelector('.img-upload__cancel'); //кнопка закрытия формы
@@ -128,14 +146,11 @@ var closeBigPicture = function () {
 
 var showBigPicture = function () {
   bigPicture.classList.remove('hidden');
-  // document.body.classList.add('modal-open');
   document.addEventListener('keydown', keyCloseBigPicture);
 };
 
-showBigPicture();
-bigPictureCancel.addEventListener('click', closeBigPicture);
 
-
+// bigPictureCancel.addEventListener('click', closeBigPicture);
 
 //открытие-закрытие формочки
 
@@ -157,44 +172,32 @@ document.addEventListener('keydown', function (evt) {
 
 
 
+// ______________________________________________________
 
-
-
-// var pictures = document.querySelectorAll('.picture');
+// var pictures = document.querySelectorAll('.picture'); // какая- то хрень
 
 // var clickPicture = function () {
-//   for (var i = 0; i < pictures.length; i++) {
-//     pictures[i].addEventListener('click', showBigPicture);
-// }
+
+// // document.querySelector('body').classList.add('modal-open');
+// for (var i = 0; i < pictures.length; i++) {
+//   pictures[i].addEventListener('click', function (evt) {
+//     console.log(evt.target.src);
+//     // var target = evt.target;
+//     // if (evt.target.tagName === 'IMG') {
+//       showBigPicture(evt.target);
+//     // }
+//   });
 // };
 
-// clickPicture();
+// };
 
-
-
-var pictures = document.querySelectorAll('.picture');
-
-var clickPicture = function (count) {
-  pictures[count].addEventListener('click', function () {
-    showBigPicture(count);
-
-    document.querySelector('body').classList.add('modal-open');
-  });
-
-};
-
-for (var i = 0; i < pictures.length; i++) {
-  var count = i;
-  clickPicture(count);
-}
-
-// clickPicture(count);
-// showBigPicture(pictures[count]);
+// clickPicture ();
+// console.log(pictures);
 
 
 
 
-
+//Наложене фильтров
 // см. https://www.w3schools.com/jsref/prop_style_filter.asp
 
 var currentEffect = document.querySelector('.img-upload__preview img');
@@ -222,3 +225,6 @@ document.querySelector('.effects__preview--heat').addEventListener('click', func
 document.querySelector('.effects__preview--none').addEventListener('click', function () {
   currentEffect.style.filter = 'none';
 });
+
+
+var filterPin = document.querySelector('.effect-level__pin');
