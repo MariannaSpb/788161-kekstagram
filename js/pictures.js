@@ -70,14 +70,13 @@ var createPhotoElement = function (publication) {
   photoElement.querySelector('.picture__comments').textContent = publication.comments.length;
   photoElement.querySelector('.picture__likes').textContent = publication.likes;
 
- // обработчик для создания большой фотографии
- photoElement.addEventListener('click', function () {
- showBigPicture(publication);
-})
+  // обработчик для создания большой фотографии
+  photoElement.addEventListener('click', function () {
+    showBigPicture(publication);
+  });
 
   return photoElement;
 };
-
 
 
 var getUsersPhotos = function (publications) {
@@ -89,11 +88,10 @@ var getUsersPhotos = function (publications) {
 };
 
 
-
 var showBigPicture = function (publication) {
   bigPicture.classList.remove('hidden');
- body.classList.add('modal-open');
-  bigPicture.querySelector('.big-picture__img img').setAttribute('src', publication.url);
+  body.classList.add('modal-open');
+  bigPicture.querySelector('.big-picture__img').querySelector('img').src = publication.url;
   bigPicture.querySelector('.likes-count').textContent = publication.likes;
   bigPicture.querySelector('.comments-count').textContent = publication.comments.length;
   bigPicture.querySelector('.social__caption').textContent = publication.description;
@@ -104,64 +102,48 @@ var showBigPicture = function (publication) {
 
   socialCommentList.insertAdjacentHTML('afterBegin', commentItem);
 
-
-  var bigPictureCancel = bigPicture.querySelector('.big-picture__cancel');
+  // навешиваем обработчики
   var closeBigPicture = function () {
     bigPicture.classList.add('hidden');
+    document.removeEventListener('keydown', keyCloseBigPictureHandler);
   };
-  bigPictureCancel.addEventListener('click', closeBigPicture);
-//сюда же функцию закрытия фотографии
+
+  var keyCloseBigPictureHandler = function (evt) {
+    if (evt.keyCode === ESC_KEYCODE) {
+      closeBigPicture();
+    }
+  };
+
+  var bigPictureCancelElement = bigPicture.querySelector('.big-picture__cancel');
+
+  bigPictureCancelElement.addEventListener('click', function () {
+    closeBigPicture();
+  });
+
+  // нажатие на документе
+  document.removeEventListener('keydown', keyCloseBigPictureHandler);
+
 };
 
 var publications = renderPublication(PHOTOS_QUANTITY);
 picturesBlock.appendChild(getUsersPhotos(publications));
 
-// showBigPicture(publications[0]);
-showBigPicture(publication);
-
-
-
 // ----------module4--------------
 var ESC_KEYCODE = 27;
-var ENTER_KEYCODE = 13;
 // var bigPictureCancel = bigPicture.querySelector('.big-picture__cancel'); //кнопка закрытия фотки
 var uploadFile = document.querySelector('#upload-file'); //input type file
-var imgUploadOverlay = document.querySelector('.img-upload__overlay');//оверлей с фоткой после change input type file
+var imgUploadOverlay = document.querySelector('.img-upload__overlay'); //оверлей с фоткой после change input type file
 var imgUploadCancel = document.querySelector('.img-upload__cancel'); //кнопка закрытия формы
-var effectsList = picturesBlock.querySelector('.effects__list'); //блок с фильтрами
 
+// открытие-закрытие формочки
 
-
-var keyCloseBigPicture = function (evt) {
-  if (evt.keyCode === ESC_KEYCODE) {
-    closeBigPicture();
-  }
-};
-
-var closeBigPicture = function () {
-  bigPicture.classList.add('hidden');
-  document.removeEventListener('keydown', keyCloseBigPicture);
-};
-
-
-var showBigPicture = function () {
-  bigPicture.classList.remove('hidden');
-  document.addEventListener('keydown', keyCloseBigPicture);
-};
-
-
-// bigPictureCancel.addEventListener('click', closeBigPicture);
-
-//открытие-закрытие формочки
-
-uploadFile.addEventListener("change", function () {
+uploadFile.addEventListener('change', function () {
   imgUploadOverlay.classList.remove('hidden');
-  uploadFileField.value = '';
 });
 
 imgUploadCancel.addEventListener('click', function () {
-  imgUploadOverlay.classList.add('hidden')
-} )
+  imgUploadOverlay.classList.add('hidden');
+});
 
 
 document.addEventListener('keydown', function (evt) {
@@ -171,60 +153,31 @@ document.addEventListener('keydown', function (evt) {
 });
 
 
-
-// ______________________________________________________
-
-// var pictures = document.querySelectorAll('.picture'); // какая- то хрень
-
-// var clickPicture = function () {
-
-// // document.querySelector('body').classList.add('modal-open');
-// for (var i = 0; i < pictures.length; i++) {
-//   pictures[i].addEventListener('click', function (evt) {
-//     console.log(evt.target.src);
-//     // var target = evt.target;
-//     // if (evt.target.tagName === 'IMG') {
-//       showBigPicture(evt.target);
-//     // }
-//   });
-// };
-
-// };
-
-// clickPicture ();
-// console.log(pictures);
-
-
-
-
-//Наложене фильтров
-// см. https://www.w3schools.com/jsref/prop_style_filter.asp
-
+var effectsList = picturesBlock.querySelector('.effects__list');
 var currentEffect = document.querySelector('.img-upload__preview img');
 
-document.querySelector('.effects__preview--chrome').addEventListener('click', function () {
-  currentEffect.style.filter = 'grayscale(1)';
-});
+// функция смены фильтра
+var effectsHandler = function (evt) {
+  var target = evt.target;
+  var effectClass = 'effects__preview--' + target.value;
+  if (target.classList.contains('effects__radio')) {
+    currentEffect.className = '';
+    currentEffect.classList.add(effectClass);
+  }
 
-document.querySelector('.effects__preview--sepia').addEventListener('click', function () {
-  currentEffect.style.filter = 'sepia(1)';
-});
+};
 
-document.querySelector('.effects__preview--marvin').addEventListener('click', function () {
-  currentEffect.style.filter = 'invert(100%)';
-});
-
-document.querySelector('.effects__preview--phobos').addEventListener('click', function () {
-  currentEffect.style.filter = 'blur(5px)';
-});
-
-document.querySelector('.effects__preview--heat').addEventListener('click', function () {
-  currentEffect.style.filter = 'brightness(3)';
-});
-
-document.querySelector('.effects__preview--none').addEventListener('click', function () {
-  currentEffect.style.filter = 'none';
-});
+effectsList.addEventListener('click', effectsHandler);
 
 
+// Эффекты
 var filterPin = document.querySelector('.effect-level__pin');
+
+var pinLineWidth = document.querySelector('.effect-level__line').offsetWidth; // возвращает ширину элемента
+var pinPosition = document.querySelector('.effect-level__pin').offsetLeft; // содержит левое смещение элемента относительно offsetParent
+
+// рассчет интенсивности эффекта
+// Для определения уровня насыщенности, нужно рассчитать положение пина слайдера относительно всего блока и
+// воспользоваться пропорцией, чтобы понять, какой уровень эффекта нужно применить.
+// завести переменную effectLevel = (pinPosition * 100) / pinLineWidth;
+// записать в функцию и передать коллбеком обработчика с событием mouseup
