@@ -154,7 +154,7 @@ document.addEventListener('keydown', function (evt) {
 
 
 var effectsList = picturesBlock.querySelector('.effects__list');
-var currentEffect = document.querySelector('.img-upload__preview img');
+var currentEffect = document.querySelector('.img-upload__preview');
 
 // функция смены фильтра
 var effectsHandler = function (evt) {
@@ -170,6 +170,7 @@ var effectsHandler = function (evt) {
 effectsList.addEventListener('click', effectsHandler);
 
 
+
 // Эффекты
 var filterPin = document.querySelector('.effect-level__pin');
 
@@ -181,3 +182,44 @@ var pinPosition = document.querySelector('.effect-level__pin').offsetLeft; // с
 // воспользоваться пропорцией, чтобы понять, какой уровень эффекта нужно применить.
 // завести переменную effectLevel = (pinPosition * 100) / pinLineWidth;
 // записать в функцию и передать коллбеком обработчика с событием mouseup
+
+
+var calcEffect = function () {
+  var effectLevel = (pinPosition * 100) / pinLineWidth; // глубина эффекта
+  return effectLevel;
+};
+// console.log(calcEffect());
+// filter: grayscale(value / 100);
+
+// var effectChangeHandler = function () {
+//   currentEffect.style.filter = calcEffect() + 'grayscale'
+// };
+
+// filterPin.addEventListener('mouseup', )// функция насыщ
+
+// размер фотки
+var valueStep = 25;
+var controlSmaller = document.querySelector('.scale__control--smaller');
+var controlBigger = document.querySelector('.scale__control--bigger');
+
+var controlValue = document.querySelector('.scale__control--value');
+var minValue = 25;
+var maxValue = 100;
+
+controlSmaller.addEventListener('click', function () {
+  var currentValue = parseInt(controlValue.value, 10);
+  if (currentValue !== minValue) {
+    controlValue.value = currentValue - valueStep + '%';
+    currentValue -= valueStep;
+    currentEffect.style.transform = 'scale(' + currentValue / 100 + ')';
+  }
+});
+
+controlBigger.addEventListener('click', function () {
+  var currentValue = parseInt(controlValue.value, 10);
+  if (currentValue !== maxValue) {
+    controlValue.value = currentValue + valueStep + '%';
+    currentValue += valueStep;
+    currentEffect.style.transform = 'scale(' + currentValue / 100 + ')';
+  }
+});
