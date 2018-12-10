@@ -208,32 +208,3 @@ controlBigger.addEventListener('click', function () {
   controlSliderHandler(maxValue, true);
 });
 
-// controlSmaller.addEventListener('click', function () {
-//   var currentValue = parseInt(controlValue.value, 10);
-//   if (currentValue !== minValue) {
-//     controlValue.value = currentValue - valueStep + '%';
-//     currentValue -= valueStep;
-//     currentEffectImg.style.transform = 'scale(' + currentValue / 100 + ')';
-//   }
-// });
-
-// controlBigger.addEventListener('click', function () {
-//   var currentValue = parseInt(controlValue.value, 10);
-//   if (currentValue !== maxValue) {
-//     controlValue.value = currentValue + valueStep + '%';
-//     currentValue += valueStep;
-//     currentEffectImg.style.transform = 'scale(' + currentValue / 100 + ')';
-//   }
-// });
-
-
-
-
-
-
-
-
-
-// удалять надо тем же способом, как и добавляешь То есть в твоём случае через classList.remove
-
-// Мари, ещё посмотри, чем отличаются кнопки плюс и минус, ты явно можешь выделить в общую функцию.
