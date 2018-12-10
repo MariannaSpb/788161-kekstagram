@@ -28,7 +28,23 @@ var socialСommentCount = document.querySelector('.social__comment-count');
 var loadComments = document.querySelector('.comments-loader');
 var bigPicture = document.querySelector('.big-picture');
 var body = document.querySelector('body');
-
+var valueStep = 25;
+var controlSmaller = document.querySelector('.scale__control--smaller');
+var controlBigger = document.querySelector('.scale__control--bigger');
+var currentEffectImg = document.querySelector('.img-upload__preview');
+var controlValue = document.querySelector('.scale__control--value');
+var minValue = 25;
+var maxValue = 100;
+var filterPin = document.querySelector('.effect-level__pin');
+var pinLineWidth = document.querySelector('.effect-level__line').offsetWidth; // возвращает ширину элемента
+var pinPosition = document.querySelector('.effect-level__pin').offsetLeft; // содержит левое смещение элемента относительно offsetParent
+var ESC_KEYCODE = 27;
+var uploadFile = document.querySelector('#upload-file'); // input type file
+var imgUploadOverlay = document.querySelector('.img-upload__overlay'); // оверлей с фоткой после change input type file
+var imgUploadCancel = document.querySelector('.img-upload__cancel'); // кнопка закрытия формы
+var effectsList = picturesBlock.querySelector('.effects__list');
+var currentEffect = document.querySelector('.img-upload__preview img');
+var effectLevel = document.querySelector('.effect-level');
 
 var getRandomInteger = function (min, max) {
   return Math.floor(Math.random() * (max - min) + min);
@@ -61,9 +77,6 @@ var renderPublication = function (count) {
   return publications;
 };
 
-// Так, там надо просто, когда ты создаёшь елемент, внутри функции,
-// перед ретурном надо повесить обработчик, внутри которого, ты вызываешь свою функцию показатьБигПикча.
-
 var createPhotoElement = function (publication) {
   var photoElement = pictureTemplate.cloneNode(true);
   photoElement.querySelector('.picture__img').setAttribute('src', publication.url);
@@ -77,7 +90,6 @@ var createPhotoElement = function (publication) {
 
   return photoElement;
 };
-
 
 var getUsersPhotos = function (publications) {
   var fragment = document.createDocumentFragment();
@@ -121,40 +133,17 @@ var showBigPicture = function (publication) {
   });
 
   // нажатие на документе
-  document.removeEventListener('keydown', keyCloseBigPictureHandler);
+  document.addEventListener('keydown', keyCloseBigPictureHandler);
 
 };
 
 var publications = renderPublication(PHOTOS_QUANTITY);
 picturesBlock.appendChild(getUsersPhotos(publications));
 
-// ----------module4--------------
-var ESC_KEYCODE = 27;
-// var bigPictureCancel = bigPicture.querySelector('.big-picture__cancel'); //кнопка закрытия фотки
-var uploadFile = document.querySelector('#upload-file'); //input type file
-var imgUploadOverlay = document.querySelector('.img-upload__overlay'); //оверлей с фоткой после change input type file
-var imgUploadCancel = document.querySelector('.img-upload__cancel'); //кнопка закрытия формы
-
-// открытие-закрытие формочки
-
-uploadFile.addEventListener('change', function () {
-  imgUploadOverlay.classList.remove('hidden');
-});
-
-imgUploadCancel.addEventListener('click', function () {
-  imgUploadOverlay.classList.add('hidden');
-});
-
-
-document.addEventListener('keydown', function (evt) {
-  if (evt.keyCode === ESC_KEYCODE) {
-    imgUploadOverlay.classList.add('hidden');
-  }
-});
-
-
-var effectsList = picturesBlock.querySelector('.effects__list');
-var currentEffect = document.querySelector('.img-upload__preview img');
+var resetForm = function () {
+  currentEffect.removeAttribute('class');
+  currentEffectImg.removeAttribute('style');
+};
 
 // функция смены фильтра
 var effectsHandler = function (evt) {
@@ -164,54 +153,87 @@ var effectsHandler = function (evt) {
     currentEffect.removeAttribute('class');
     currentEffect.classList.add(effectClass);
   }
+  if (currentEffect.classList.contains('effects__preview--none')) {
+    effectLevel.classList.add('hidden');
+  } else {
+    effectLevel.classList.remove('hidden');
+  }
 };
 
-effectsList.addEventListener('click', effectsHandler);
+// открытие-закрытие формочки
 
-// Эффекты
-var filterPin = document.querySelector('.effect-level__pin');
-var effectLevel = document.querySelector('.effect-level')
-var effectLevelValue = effectLevel.querySelector('.effect-level__value');
+uploadFile.addEventListener('change', function () {
+  imgUploadOverlay.classList.remove('hidden');
+  effectsList.addEventListener('click', effectsHandler);
+});
 
-var pinLineWidth = document.querySelector('.effect-level__line').offsetWidth; // возвращает ширину элемента
-var pinPosition = document.querySelector('.effect-level__pin').offsetLeft; // содержит левое смещение элемента относительно offsetParent
+imgUploadCancel.addEventListener('click', function () {
+  imgUploadOverlay.classList.add('hidden');
+  effectsList.removeEventListener('click', effectsHandler);
+  resetForm();
+});
 
-// рассчет интенсивности эффекта
-// Для определения уровня насыщенности, нужно рассчитать положение пина слайдера относительно всего блока и
-// воспользоваться пропорцией, чтобы понять, какой уровень эффекта нужно применить.
-// завести переменную effectLevel = (pinPosition * 100) / pinLineWidth;
-// записать в функцию и передать коллбеком обработчика с событием mouseup
+
+document.addEventListener('keydown', function (evt) {
+  if (evt.keyCode === ESC_KEYCODE) {
+    imgUploadOverlay.classList.add('hidden');
+    resetForm();
+  }
+});
 
 
 filterPin.addEventListener('mouseup', function () {
+  var effectLevelValue = effectLevel.querySelector('.effect-level__value');
   effectLevelValue.value = pinPosition * 100 / pinLineWidth;
 });
 
-
-// размер фотки
-// var  = document.querySelector('.img-upload__preview');
-var valueStep = 25;
-var controlSmaller = document.querySelector('.scale__control--smaller');
-var controlBigger = document.querySelector('.scale__control--bigger');
-var currentEffectImg = document.querySelector('.img-upload__preview');
-var controlValue = document.querySelector('.scale__control--value');
-var minValue = 25;
-var maxValue = 100;
-
-controlSmaller.addEventListener('click', function () {
+var controlSliderHandler = function (value, bool) {
   var currentValue = parseInt(controlValue.value, 10);
-  if (currentValue !== minValue) {
-    controlValue.value = currentValue - valueStep + '%';
-    currentValue -= valueStep;
+  if (currentValue !== value) {
+    if (bool) {
+      controlValue.value = currentValue + valueStep + '%';
+      currentValue += valueStep;
+    } else {
+      controlValue.value = currentValue - valueStep + '%';
+      currentValue -= valueStep;
+    }
     currentEffectImg.style.transform = 'scale(' + currentValue / 100 + ')';
   }
+};
+controlSmaller.addEventListener('click', function () {
+  controlSliderHandler(minValue, false);
 });
 
 controlBigger.addEventListener('click', function () {
-  var currentValue = parseInt(controlValue.value, 10);
-  if (currentValue !== maxValue) {
-    controlValue.value = currentValue + valueStep + '%';
-    currentValue += valueStep;
-    currentEffectImg.style.transform = 'scale(' + currentValue / 100 + ')';
-  }
+  controlSliderHandler(maxValue, true);
 });
+
+// controlSmaller.addEventListener('click', function () {
+//   var currentValue = parseInt(controlValue.value, 10);
+//   if (currentValue !== minValue) {
+//     controlValue.value = currentValue - valueStep + '%';
+//     currentValue -= valueStep;
+//     currentEffectImg.style.transform = 'scale(' + currentValue / 100 + ')';
+//   }
+// });
+
+// controlBigger.addEventListener('click', function () {
+//   var currentValue = parseInt(controlValue.value, 10);
+//   if (currentValue !== maxValue) {
+//     controlValue.value = currentValue + valueStep + '%';
+//     currentValue += valueStep;
+//     currentEffectImg.style.transform = 'scale(' + currentValue / 100 + ')';
+//   }
+// });
+
+
+
+
+
+
+
+
+
+// удалять надо тем же способом, как и добавляешь То есть в твоём случае через classList.remove
+
+// Мари, ещё посмотри, чем отличаются кнопки плюс и минус, ты явно можешь выделить в общую функцию.
