@@ -154,25 +154,24 @@ document.addEventListener('keydown', function (evt) {
 
 
 var effectsList = picturesBlock.querySelector('.effects__list');
-var currentEffect = document.querySelector('.img-upload__preview');
+var currentEffect = document.querySelector('.img-upload__preview img');
 
 // функция смены фильтра
 var effectsHandler = function (evt) {
   var target = evt.target;
   var effectClass = 'effects__preview--' + target.value;
   if (target.classList.contains('effects__radio')) {
-    currentEffect.className = '';
+    currentEffect.removeAttribute('class');
     currentEffect.classList.add(effectClass);
   }
-
 };
 
 effectsList.addEventListener('click', effectsHandler);
 
-
-
 // Эффекты
 var filterPin = document.querySelector('.effect-level__pin');
+var effectLevel = document.querySelector('.effect-level')
+var effectLevelValue = effectLevel.querySelector('.effect-level__value');
 
 var pinLineWidth = document.querySelector('.effect-level__line').offsetWidth; // возвращает ширину элемента
 var pinPosition = document.querySelector('.effect-level__pin').offsetLeft; // содержит левое смещение элемента относительно offsetParent
@@ -184,24 +183,17 @@ var pinPosition = document.querySelector('.effect-level__pin').offsetLeft; // с
 // записать в функцию и передать коллбеком обработчика с событием mouseup
 
 
-var calcEffect = function () {
-  var effectLevel = (pinPosition * 100) / pinLineWidth; // глубина эффекта
-  return effectLevel;
-};
-// console.log(calcEffect());
-// filter: grayscale(value / 100);
+filterPin.addEventListener('mouseup', function () {
+  effectLevelValue.value = pinPosition * 100 / pinLineWidth;
+});
 
-// var effectChangeHandler = function () {
-//   currentEffect.style.filter = calcEffect() + 'grayscale'
-// };
-
-// filterPin.addEventListener('mouseup', )// функция насыщ
 
 // размер фотки
+// var  = document.querySelector('.img-upload__preview');
 var valueStep = 25;
 var controlSmaller = document.querySelector('.scale__control--smaller');
 var controlBigger = document.querySelector('.scale__control--bigger');
-
+var currentEffectImg = document.querySelector('.img-upload__preview');
 var controlValue = document.querySelector('.scale__control--value');
 var minValue = 25;
 var maxValue = 100;
@@ -211,7 +203,7 @@ controlSmaller.addEventListener('click', function () {
   if (currentValue !== minValue) {
     controlValue.value = currentValue - valueStep + '%';
     currentValue -= valueStep;
-    currentEffect.style.transform = 'scale(' + currentValue / 100 + ')';
+    currentEffectImg.style.transform = 'scale(' + currentValue / 100 + ')';
   }
 });
 
@@ -220,6 +212,6 @@ controlBigger.addEventListener('click', function () {
   if (currentValue !== maxValue) {
     controlValue.value = currentValue + valueStep + '%';
     currentValue += valueStep;
-    currentEffect.style.transform = 'scale(' + currentValue / 100 + ')';
+    currentEffectImg.style.transform = 'scale(' + currentValue / 100 + ')';
   }
 });
