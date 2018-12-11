@@ -28,13 +28,13 @@ var socialСommentCount = document.querySelector('.social__comment-count');
 var loadComments = document.querySelector('.comments-loader');
 var bigPicture = document.querySelector('.big-picture');
 var body = document.querySelector('body');
-var valueStep = 25;
+var VALUE_STEP = 25;
 var controlSmaller = document.querySelector('.scale__control--smaller');
 var controlBigger = document.querySelector('.scale__control--bigger');
 var currentEffectImg = document.querySelector('.img-upload__preview');
 var controlValue = document.querySelector('.scale__control--value');
-var minValue = 25;
-var maxValue = 100;
+var MIN_VALUE = 25;
+var MAX_VALUE = 100;
 var filterPin = document.querySelector('.effect-level__pin');
 var pinLineWidth = document.querySelector('.effect-level__line').offsetWidth; // возвращает ширину элемента
 var pinPosition = document.querySelector('.effect-level__pin').offsetLeft; // содержит левое смещение элемента относительно offsetParent
@@ -145,6 +145,7 @@ var resetForm = function () {
   currentEffectImg.removeAttribute('style');
 };
 
+
 // функция смены фильтра
 var effectsHandler = function (evt) {
   var target = evt.target;
@@ -187,24 +188,20 @@ filterPin.addEventListener('mouseup', function () {
   effectLevelValue.value = pinPosition * 100 / pinLineWidth;
 });
 
-var controlSliderHandler = function (value, bool) {
+var changePictureSize = function (difference) {
   var currentValue = parseInt(controlValue.value, 10);
-  if (currentValue !== value) {
-    if (bool) {
-      controlValue.value = currentValue + valueStep + '%';
-      currentValue += valueStep;
-    } else {
-      controlValue.value = currentValue - valueStep + '%';
-      currentValue -= valueStep;
-    }
-    currentEffectImg.style.transform = 'scale(' + currentValue / 100 + ')';
-  }
+  var newValue = difference < 0 ?
+    Math.max(MIN_VALUE, currentValue + difference) :
+    Math.min(MAX_VALUE, currentValue + difference);
+
+  controlValue.value = newValue + '%';
+  currentEffectImg.style.transform = 'scale(' + newValue / 100 + ')';
 };
+
 controlSmaller.addEventListener('click', function () {
-  controlSliderHandler(minValue, false);
+  changePictureSize(-VALUE_STEP);
 });
 
 controlBigger.addEventListener('click', function () {
-  controlSliderHandler(maxValue, true);
+  changePictureSize(VALUE_STEP);
 });
-
