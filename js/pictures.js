@@ -162,6 +162,16 @@ var effectsHandler = function (evt) {
 };
 
 // открытие-закрытие формочки
+var onPopupEscPress = function (evt) {
+  if (evt.keyCode === ESC_KEYCODE) {
+    closePopup();
+  }
+};
+var closePopup = function () {
+  imgUploadOverlay.classList.add('hidden');
+  document.removeEventListener('keydown', onPopupEscPress);
+};
+
 
 uploadFile.addEventListener('change', function () {
   imgUploadOverlay.classList.remove('hidden');
@@ -176,12 +186,14 @@ imgUploadCancel.addEventListener('click', function () {
 });
 
 
-document.addEventListener('keydown', function (evt) {
-  if (evt.keyCode === ESC_KEYCODE) {
-    imgUploadOverlay.classList.add('hidden');
-    resetForm();
-  }
-});
+// document.addEventListener('keydown', function (evt) {
+//   if (evt.keyCode === ESC_KEYCODE) {
+//     imgUploadOverlay.classList.add('hidden');
+//     resetForm();
+//   }
+// });
+
+document.addEventListener('keydown', onPopupEscPress);
 
 
 filterPin.addEventListener('mouseup', function () {
@@ -210,7 +222,7 @@ controlBigger.addEventListener('click', function () {
 // var textHashtag = document.querySelector('.text__hashtags');
 var MAX_HASHTAG = 5;
 var MAX_SYMBOLS = 20;
-var MIN_SYMBOLS = 1; //хеш-тег не может состоять только из одной решётки;
+var MIN_SYMBOLS = 1; // хеш-тег не может состоять только из одной решётки;
 var commentsInput = document.querySelector('.text__description');
 var buttonSubmit = document.querySelector('.img-upload__submit');
 // хэш-теги необязательны; -разметка
@@ -226,23 +238,6 @@ var buttonSubmit = document.querySelector('.img-upload__submit');
 // var hashtagList = hashtagValue.split(' ');
 // хэш-тег начинается с решетки
 
-// var checkHashtag = function (HashArray) {
-//   var hashtag = HashArray[0] === '#';
-//   return hashtag;
-// };
-
-// хеш-тег не может состоять только из одной решётки
-// var checkLengthMin = function (HashArray) {
-//   var hashtag = HashArray.length > MIN_SYMBOLS;
-//   return hashtag;
-// };
-
-// var checkLengthMax = function (HashArray) {
-//   var hashtag = HashArray.length <= MAX_SYMBOLS;
-//   return hashtag;
-// };
-
-
 commentsInput.addEventListener('input', function (evt) {
   var target = evt.target;
   if (target.value.length >= 140) {
@@ -252,37 +247,52 @@ commentsInput.addEventListener('input', function (evt) {
   }
 });
 
-
 var textHashtag = document.querySelector('.text__hashtags');
 
 var checkHashtagValidity = function () {
   var errorMessage = '';
   var hashtagValue = textHashtag.value;
   if (textHashtag.value !== '') {
-    var hashTags = hashtagValue.split(' ');
+    var hashTags = hashtagValue.split(' '); // Набор хэш-тегов можно превратить в массив, воспользовавшись методом split, который разбивает строки на массивы.
 
-    for (var i = 0; i < hashTags.length; i++) {
+    for (var i = 0; i < hashTags.length; i++) { // После этого, вы можете написать цикл, который будет ходить по полученному массиву и проверять каждый из хэш-тегов на предмет соответствия ограничениям.
       var hashtag = hashTags[i];
+      console.log(hashTags[i]);
       if (hashtag[0] !== '#') {
+        console.log('#');
         errorMessage = 'хэш-тег начинается с символа # (решётка)';
       } else if (hashtag.length === MIN_SYMBOLS) {
         errorMessage = 'хеш-тег не может состоять только из одной решётки';
-      } else if (hashtag.indexOf(hashTags[i]) > 0) { // не работает
+      } else if (hashTags.indexOf(hashTags[i]) !== i) {
         errorMessage = 'хеш-тег не должен повторяться';
       } else if (hashTags.length > MAX_HASHTAG) {
         errorMessage = 'нельзя указать больше пяти хэш-тегов';
       } else if (hashtag.length > MAX_SYMBOLS) {
         errorMessage = 'максимальная длина одного хэш-тега 20 символов, включая решётку';
+      } else {
+        errorMessage = '';
       }
     }
   }
   textHashtag.setCustomValidity(errorMessage);
 };
 
-// textHashtag.addEventListener('change', function () {
-//   checkHashtagValidity();
-// });
+textHashtag.addEventListener('change', checkHashtagValidity);
 
 buttonSubmit.addEventListener('click', function () {
   checkHashtagValidity();
 });
+
+
+commentsInput.addEventListener('focus', function () {
+  document.removeEventListener('keydown', onPopupEscPress);
+});
+
+// если фокус находится в поле ввода хэш-тега, нажатие на Esc не должно приводить к закрытию формы редактирования изображения.
+// если фокус находится в поле ввода комментария, нажатие на Esc не должно приводить к закрытию формы редактирования изображения.
+
+textHashtag.addEventListener('focus', function () {
+  document.removeEventListener('keydown', onPopupEscPress);
+});
+
+
