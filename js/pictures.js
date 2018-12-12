@@ -166,6 +166,7 @@ var effectsHandler = function (evt) {
 uploadFile.addEventListener('change', function () {
   imgUploadOverlay.classList.remove('hidden');
   effectsList.addEventListener('click', effectsHandler);
+  effectLevel.classList.add('hidden');
 });
 
 imgUploadCancel.addEventListener('click', function () {
@@ -204,4 +205,84 @@ controlSmaller.addEventListener('click', function () {
 
 controlBigger.addEventListener('click', function () {
   changePictureSize(VALUE_STEP);
+});
+
+// var textHashtag = document.querySelector('.text__hashtags');
+var MAX_HASHTAG = 5;
+var MAX_SYMBOLS = 20;
+var MIN_SYMBOLS = 1; //хеш-тег не может состоять только из одной решётки;
+var commentsInput = document.querySelector('.text__description');
+var buttonSubmit = document.querySelector('.img-upload__submit');
+// хэш-теги необязательны; -разметка
+// хэш-тег начинается с символа # (решётка);
+// хеш-тег не может состоять только из одной решётки;
+// хэш-теги разделяются пробелами;
+// один и тот же хэш-тег не может быть использован дважды;
+// нельзя указать больше пяти хэш-тегов;
+// максимальная длина одного хэш-тега 20 символов, включая решётку;
+// теги нечувствительны к регистру: #ХэшТег и #хэштег считаются одним и тем же тегом.
+// если фокус находится в поле ввода хэш-тега, нажатие на Esc не должно приводить к закрытию формы редактирования изображения.
+// var hashtagValue = textHashtag.value;
+// var hashtagList = hashtagValue.split(' ');
+// хэш-тег начинается с решетки
+
+// var checkHashtag = function (HashArray) {
+//   var hashtag = HashArray[0] === '#';
+//   return hashtag;
+// };
+
+// хеш-тег не может состоять только из одной решётки
+// var checkLengthMin = function (HashArray) {
+//   var hashtag = HashArray.length > MIN_SYMBOLS;
+//   return hashtag;
+// };
+
+// var checkLengthMax = function (HashArray) {
+//   var hashtag = HashArray.length <= MAX_SYMBOLS;
+//   return hashtag;
+// };
+
+
+commentsInput.addEventListener('input', function (evt) {
+  var target = evt.target;
+  if (target.value.length >= 140) {
+    target.setCustomValidity('Lлина комментария не может составлять больше 140 символов');
+  } else {
+    target.setCustomValidity('');
+  }
+});
+
+
+var textHashtag = document.querySelector('.text__hashtags');
+
+var checkHashtagValidity = function () {
+  var errorMessage = '';
+  var hashtagValue = textHashtag.value;
+  if (textHashtag.value !== '') {
+    var hashTags = hashtagValue.split(' ');
+
+    for (var i = 0; i < hashTags.length; i++) {
+      var hashtag = hashTags[i];
+      if (hashtag[0] !== '#') {
+        errorMessage = 'хэш-тег начинается с символа # (решётка)';
+      } else if (hashtag.length === MIN_SYMBOLS) {
+        errorMessage = 'хеш-тег не может состоять только из одной решётки';
+      } else if (hashtag.indexOf(hashTags[i]) > 0) { // не работает
+        errorMessage = 'хеш-тег не должен повторяться';
+      } else if (hashTags.length > MAX_HASHTAG) {
+        errorMessage = 'нельзя указать больше пяти хэш-тегов';
+      } else if (hashtag.length > MAX_SYMBOLS) {
+        errorMessage = 'максимальная длина одного хэш-тега 20 символов, включая решётку';
+      }
+    }
+  }
+  textHashtag.setCustomValidity(errorMessage);
+};
+
+// textHashtag.addEventListener('change', function () {
+//   checkHashtagValidity();
+// });
+
+buttonSubmit.addEventListener('click', function () {
+  checkHashtagValidity();
 });
