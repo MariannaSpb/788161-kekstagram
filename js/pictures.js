@@ -219,48 +219,38 @@ controlBigger.addEventListener('click', function () {
   changePictureSize(VALUE_STEP);
 });
 
-// var textHashtag = document.querySelector('.text__hashtags');
 var MAX_HASHTAG = 5;
 var MAX_SYMBOLS = 20;
 var MIN_SYMBOLS = 1; // хеш-тег не может состоять только из одной решётки;
 var commentsInput = document.querySelector('.text__description');
 var buttonSubmit = document.querySelector('.img-upload__submit');
-// хэш-теги необязательны; -разметка
-// хэш-тег начинается с символа # (решётка);
-// хеш-тег не может состоять только из одной решётки;
-// хэш-теги разделяются пробелами;
-// один и тот же хэш-тег не может быть использован дважды;
-// нельзя указать больше пяти хэш-тегов;
-// максимальная длина одного хэш-тега 20 символов, включая решётку;
-// теги нечувствительны к регистру: #ХэшТег и #хэштег считаются одним и тем же тегом.
-// если фокус находится в поле ввода хэш-тега, нажатие на Esc не должно приводить к закрытию формы редактирования изображения.
-// var hashtagValue = textHashtag.value;
-// var hashtagList = hashtagValue.split(' ');
-// хэш-тег начинается с решетки
-
-commentsInput.addEventListener('input', function (evt) {
-  var target = evt.target;
-  if (target.value.length >= 140) {
-    target.setCustomValidity('Lлина комментария не может составлять больше 140 символов');
-  } else {
-    target.setCustomValidity('');
-  }
-});
-
 var textHashtag = document.querySelector('.text__hashtags');
+
+var checkCommentsValue = function () {
+  var textareaValue = commentsInput.value;
+  var errorMessage = '';
+  if (textareaValue.length > 140) {
+    errorMessage = 'максимальная длина 140';
+  } else {
+    errorMessage = '';
+  }
+  commentsInput.setCustomValidity(errorMessage);
+};
+
+commentsInput.addEventListener('input', checkCommentsValue);
+
 
 var checkHashtagValidity = function () {
   var errorMessage = '';
-  var hashtagValue = textHashtag.value;
+  var hashtagValue = textHashtag.value.trim();
   if (textHashtag.value !== '') {
     var hashTags = hashtagValue.split(' '); // Набор хэш-тегов можно превратить в массив, воспользовавшись методом split, который разбивает строки на массивы.
 
     for (var i = 0; i < hashTags.length; i++) { // После этого, вы можете написать цикл, который будет ходить по полученному массиву и проверять каждый из хэш-тегов на предмет соответствия ограничениям.
       var hashtag = hashTags[i];
-      console.log(hashTags[i]);
       if (hashtag[0] !== '#') {
-        console.log('#');
         errorMessage = 'хэш-тег начинается с символа # (решётка)';
+        break;
       } else if (hashtag.length === MIN_SYMBOLS) {
         errorMessage = 'хеш-тег не может состоять только из одной решётки';
       } else if (hashTags.indexOf(hashTags[i]) !== i) {
@@ -288,11 +278,6 @@ commentsInput.addEventListener('focus', function () {
   document.removeEventListener('keydown', onPopupEscPress);
 });
 
-// если фокус находится в поле ввода хэш-тега, нажатие на Esc не должно приводить к закрытию формы редактирования изображения.
-// если фокус находится в поле ввода комментария, нажатие на Esc не должно приводить к закрытию формы редактирования изображения.
-
 textHashtag.addEventListener('focus', function () {
   document.removeEventListener('keydown', onPopupEscPress);
 });
-
-
