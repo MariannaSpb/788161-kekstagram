@@ -244,7 +244,7 @@ var checkHashtagValidity = function () {
   var errorMessage = '';
   var hashtagValue = textHashtag.value.trim();
   if (textHashtag.value !== '') {
-    var hashTags = hashtagValue.split(' '); // Набор хэш-тегов можно превратить в массив, воспользовавшись методом split, который разбивает строки на массивы.
+    var hashTags = hashtagValue.toLowerCase().split(' '); // Набор хэш-тегов можно превратить в массив, воспользовавшись методом split, который разбивает строки на массивы.
 
     for (var i = 0; i < hashTags.length; i++) { // После этого, вы можете написать цикл, который будет ходить по полученному массиву и проверять каждый из хэш-тегов на предмет соответствия ограничениям.
       var hashtag = hashTags[i];
@@ -255,6 +255,7 @@ var checkHashtagValidity = function () {
         errorMessage = 'хеш-тег не может состоять только из одной решётки';
       } else if (hashTags.indexOf(hashTags[i]) !== i) {
         errorMessage = 'хеш-тег не должен повторяться';
+        break;
       } else if (hashTags.length > MAX_HASHTAG) {
         errorMessage = 'нельзя указать больше пяти хэш-тегов';
       } else if (hashtag.length > MAX_SYMBOLS) {
