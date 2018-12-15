@@ -286,18 +286,3 @@ textHashtag.addEventListener('focus', function () {
   document.removeEventListener('keydown', onPopupEscPress);
 });
 
-// var filterPin = document.querySelector('.effect-level__pin'); найдём тот элемент, за который будем тащить
-// var MAX_POSITION_X = 630;
-// var MIN_POSITION_X = 130;
-
-filterPin.addEventListener('mousedown', function (evt) { // обработаем событие начала перетаскивания
-  evt.preventDefault();
-
-  var startCoords = { // запомним координаты точки с кототорой начали
-    x: evt.clientX,
-    // y: evt.clientY
-  };
-
-  document.addEventListener('mousemove', onMouseMove);
-  document.addEventListener('mouseup', onMouseUp);
-});
