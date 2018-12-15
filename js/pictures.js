@@ -162,10 +162,21 @@ var effectsHandler = function (evt) {
 };
 
 // открытие-закрытие формочки
+var onPopupEscPress = function (evt) {
+  if (evt.keyCode === ESC_KEYCODE) {
+    closePopup();
+  }
+};
+var closePopup = function () {
+  imgUploadOverlay.classList.add('hidden');
+  document.removeEventListener('keydown', onPopupEscPress);
+};
+
 
 uploadFile.addEventListener('change', function () {
   imgUploadOverlay.classList.remove('hidden');
   effectsList.addEventListener('click', effectsHandler);
+  effectLevel.classList.add('hidden');
 });
 
 imgUploadCancel.addEventListener('click', function () {
@@ -175,12 +186,14 @@ imgUploadCancel.addEventListener('click', function () {
 });
 
 
-document.addEventListener('keydown', function (evt) {
-  if (evt.keyCode === ESC_KEYCODE) {
-    imgUploadOverlay.classList.add('hidden');
-    resetForm();
-  }
-});
+// document.addEventListener('keydown', function (evt) {
+//   if (evt.keyCode === ESC_KEYCODE) {
+//     imgUploadOverlay.classList.add('hidden');
+//     resetForm();
+//   }
+// });
+
+document.addEventListener('keydown', onPopupEscPress);
 
 
 filterPin.addEventListener('mouseup', function () {
@@ -205,3 +218,71 @@ controlSmaller.addEventListener('click', function () {
 controlBigger.addEventListener('click', function () {
   changePictureSize(VALUE_STEP);
 });
+
+var MAX_HASHTAG = 5;
+var MAX_SYMBOLS = 20;
+var MIN_SYMBOLS = 1; // хеш-тег не может состоять только из одной решётки;
+var commentsInput = document.querySelector('.text__description');
+var buttonSubmit = document.querySelector('.img-upload__submit');
+var textHashtag = document.querySelector('.text__hashtags');
+
+var checkCommentsValue = function () {
+  var textareaValue = commentsInput.value;
+  var errorMessage = '';
+  if (textareaValue.length > 140) {
+    errorMessage = 'максимальная длина 140';
+  } else {
+    errorMessage = '';
+  }
+  commentsInput.setCustomValidity(errorMessage);
+};
+
+commentsInput.addEventListener('input', checkCommentsValue);
+
+
+var checkHashtagValidity = function () {
+  var errorMessage = '';
+  var hashtagValue = textHashtag.value.trim();
+  if (textHashtag.value !== '') {
+    var hashTags = hashtagValue.toLowerCase().split(' '); // Набор хэш-тегов можно превратить в массив, воспользовавшись методом split, который разбивает строки на массивы.
+
+    for (var i = 0; i < hashTags.length; i++) { // После этого, вы можете написать цикл, который будет ходить по полученному массиву и проверять каждый из хэш-тегов на предмет соответствия ограничениям.
+      var hashtag = hashTags[i];
+      if (hashtag[0] !== '#') {
+        errorMessage = 'хэш-тег начинается с символа # (решётка)';
+        break;
+      } else if (hashtag.length === MIN_SYMBOLS) {
+        errorMessage = 'хеш-тег не может состоять только из одной решётки';
+        break;
+      } else if (hashTags.indexOf(hashTags[i]) !== i) {
+        errorMessage = 'хеш-тег не должен повторяться';
+        break;
+      } else if (hashTags.length > MAX_HASHTAG) {
+        errorMessage = 'нельзя указать больше пяти хэш-тегов';
+        break;
+      } else if (hashtag.length > MAX_SYMBOLS) {
+        errorMessage = 'максимальная длина одного хэш-тега 20 символов, включая решётку';
+        break;
+      } else {
+        errorMessage = '';
+      }
+    }
+  }
+  textHashtag.setCustomValidity(errorMessage);
+};
+
+textHashtag.addEventListener('change', checkHashtagValidity);
+
+buttonSubmit.addEventListener('click', function () {
+  checkHashtagValidity();
+});
+
+
+commentsInput.addEventListener('focus', function () {
+  document.removeEventListener('keydown', onPopupEscPress);
+});
+
+textHashtag.addEventListener('focus', function () {
+  document.removeEventListener('keydown', onPopupEscPress);
+});
+
