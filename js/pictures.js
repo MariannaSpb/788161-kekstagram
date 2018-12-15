@@ -253,13 +253,16 @@ var checkHashtagValidity = function () {
         break;
       } else if (hashtag.length === MIN_SYMBOLS) {
         errorMessage = 'хеш-тег не может состоять только из одной решётки';
+        break;
       } else if (hashTags.indexOf(hashTags[i]) !== i) {
         errorMessage = 'хеш-тег не должен повторяться';
         break;
       } else if (hashTags.length > MAX_HASHTAG) {
         errorMessage = 'нельзя указать больше пяти хэш-тегов';
+        break;
       } else if (hashtag.length > MAX_SYMBOLS) {
         errorMessage = 'максимальная длина одного хэш-тега 20 символов, включая решётку';
+        break;
       } else {
         errorMessage = '';
       }
@@ -281,4 +284,20 @@ commentsInput.addEventListener('focus', function () {
 
 textHashtag.addEventListener('focus', function () {
   document.removeEventListener('keydown', onPopupEscPress);
+});
+
+// var filterPin = document.querySelector('.effect-level__pin'); найдём тот элемент, за который будем тащить
+// var MAX_POSITION_X = 630;
+// var MIN_POSITION_X = 130;
+
+filterPin.addEventListener('mousedown', function (evt) { // обработаем событие начала перетаскивания
+  evt.preventDefault();
+
+  var startCoords = { // запомним координаты точки с кототорой начали
+    x: evt.clientX,
+    // y: evt.clientY
+  };
+
+  document.addEventListener('mousemove', onMouseMove);
+  document.addEventListener('mouseup', onMouseUp);
 });
