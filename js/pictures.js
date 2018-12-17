@@ -40,6 +40,8 @@ var uploadFile = document.querySelector('#upload-file'); // input type file
 var imgUploadOverlay = document.querySelector('.img-upload__overlay'); // оверлей с фоткой после change input type file
 var imgUploadCancel = document.querySelector('.img-upload__cancel'); // кнопка закрытия формы
 var effectsList = picturesBlock.querySelector('.effects__list');
+var filterPin = document.querySelector('.effect-level__pin');// найдём тот элемент, за который будем тащить
+var effectLevelDepth = document.querySelector('.effect-level__depth');
 
 
 var getRandomInteger = function (min, max) {
@@ -154,6 +156,8 @@ var effectsHandler = function (evt) {
     effectLevel.classList.add('hidden');
   } else {
     effectLevel.classList.remove('hidden');
+    filterPin.style.left = MAX_VLUE_PIN + 'px';
+    effectLevelDepth.style.width = '100%';
   }
 };
 
@@ -279,9 +283,16 @@ textHashtag.addEventListener('focus', function () {
 
 // ----module-5 ------//
 
-var effectLevelDepth = document.querySelector('.effect-level__depth');
 // var pinLineWidth = document.querySelector('.effect-level__line').offsetWidth; // возвращает ширину элемента
-var pinLineWidth = 453;
+var MIN_VLUE_PIN = 0;
+var MAX_VLUE_PIN = 455;
+// var dragLimit = {
+//   x: {
+//     min: 0,
+//     max: 453
+//   }
+// };
+// var pinLineWidth = document.querySelector('.effect-level__line');
 // var pinPosition = document.querySelector('.effect-level__pin').offsetLeft; // содержит левое смещение элемента относительно offsetParent
 var currentEffect = document.querySelector('.img-upload__preview img');
 var effectLevel = document.querySelector('.effect-level');
@@ -294,7 +305,7 @@ var pinPosition;
 // Для эффекта «Зной» — filter: brightness(1..3).
 
 
-var filterPin = document.querySelector('.effect-level__pin');// найдём тот элемент, за который будем тащить
+// var filterPin = document.querySelector('.effect-level__pin');// найдём тот элемент, за который будем тащить
 
 filterPin.addEventListener('mousedown', function (evt) { // обработаем событие начала перетаскивания
   evt.preventDefault();
@@ -310,11 +321,23 @@ filterPin.addEventListener('mousedown', function (evt) { // обработаем
     startCoords = moveEvt.clientX;
 
     pinPosition = filterPin.offsetLeft - shift;
-    filterPin.style.left = pinPosition + 'px';
-    var pinPercents = Math.round(pinPosition * 100 / pinLineWidth);
-    effectLevelValue.value = pinPercents;
-    effectLevelDepth.style.width = effectLevelValue.value + '%';
+    // filterPin.style.left = pinPosition + 'px';
+    // var pinPercents = Math.round(pinPosition * 100 / pinLineWidth.offsetWidth);
+    // effectLevelValue.value = pinPercents;
+    // effectLevelDepth.style.width = effectLevelValue.value + '%';
 
+    if (pinPosition >= MIN_VLUE_PIN && pinPosition <= MAX_VLUE_PIN) {
+      var pinPercents = Math.round(pinPosition * 100 / MAX_VLUE_PIN);
+      effectLevelValue.value = pinPercents;
+      filterPin.style.left = pinPosition + 'px';
+      effectLevelDepth.style.width = pinPercents + '%';
+      // var target = evt.target;
+      // var effectClass = 'effects__preview--' + target.value;
+      // if (target.classList.contains('effects__radio')) {
+      //   currentEffect.removeAttribute('class');
+      //   currentEffect.classList.add(effectClass);
+      // }
+    }
 
     if (currentEffect.classList.contains('effects__preview--chrome')) {
       currentEffect.style.filter = 'grayscale(' + (pinPercents / 100) + ')';
