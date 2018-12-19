@@ -25,6 +25,7 @@
 
   var resetForm = function () {
     var inputs = document.querySelectorAll('.effects__radio:checked');
+    document.addEventListener('keydown', onPopupEscPress);
     currentEffect.removeAttribute('class');
     currentEffect.removeAttribute('style');
     currentEffectImg.removeAttribute('style');

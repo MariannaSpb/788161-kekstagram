@@ -44,9 +44,7 @@
 
     // нажатие на документе
     document.addEventListener('keydown', keyCloseBigPictureHandler);
-
   };
-
 
   window.preview = {
     showBigPicture: showBigPicture
