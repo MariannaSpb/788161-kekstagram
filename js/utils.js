@@ -17,7 +17,6 @@
 
   window.utils = {
     getRandomElement: getRandomElement,
-    // isEscEvent: isEscEvent
     getRandomInteger: getRandomInteger,
     ESC_KEYCODE: ESC_KEYCODE
   };

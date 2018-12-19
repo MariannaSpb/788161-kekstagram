@@ -23,7 +23,7 @@
     'Не обижайте всех словами......',
     'Вот это тачка!'
   ];
-  var picturesBlock = document.querySelector('.pictures');
+
 
   var generateComments = function (count) {
     var pictureComments = [];
@@ -48,65 +48,9 @@
     return publications;
   };
 
-
-
-
-
-  var pictureTemplate = document.querySelector('#picture').content.querySelector('.picture'); // ищу #picture и в нем ищу .picture
-  // var picturesBlock = document.querySelector('.pictures');
-
-  var createPhotoElement = function (publication) {
-    var photoElement = pictureTemplate.cloneNode(true);
-    photoElement.querySelector('.picture__img').setAttribute('src', publication.url);
-    photoElement.querySelector('.picture__comments').textContent = publication.comments.length;
-    photoElement.querySelector('.picture__likes').textContent = publication.likes;
-
-    // обработчик для создания большой фотографии
-    photoElement.addEventListener('click', function () {
-      window.pictures.showBigPicture(publication);
-    });
-
-    return photoElement;
+  window.data = {
+    renderPublication: renderPublication,
+    PHOTOS_QUANTITY: PHOTOS_QUANTITY
   };
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-  var getUsersPhotos = function (publications) {
-    var fragment = document.createDocumentFragment();
-    for (var i = 0; i < publications.length; i++) {
-      fragment.appendChild(createPhotoElement(publications[i]));
-    }
-    return fragment;
-  };
-
-
-
-
-
-
-  var publications = renderPublication(PHOTOS_QUANTITY);
-  picturesBlock.appendChild(getUsersPhotos(publications));
-
-
-  // window.data = {
-  //   // renderPublication: renderPublication,
-  //   getUsersPhotos: getUsersPhotos
-  // };
 
 })();
