@@ -3,8 +3,9 @@
   var MIN_VLUE_PIN = 0;
   var effectLevelValue = document.querySelector('.effect-level__value'); // effectLevel
   var pinPosition;
+  var filterPin = document.querySelector('.effect-level__pin');
 
-  window.form.filterPin.addEventListener('mousedown', function (evt) { // обработаем событие начала перетаскивания
+  filterPin.addEventListener('mousedown', function (evt) { // обработаем событие начала перетаскивания
     evt.preventDefault();
 
 

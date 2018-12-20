@@ -4,8 +4,6 @@
   var PHOTOS_QUANTITY = 25;
   var MIN_LIKES_SUM = 15;
   var MAX_LIKES_SUM = 200;
-  // var MIN_AVATAR_URL = 1;
-  // var MAX_AVATAR_URL = 6;
   var COMMENTS = [
     'Всё отлично!',
     'В целом всё неплохо. Но не всё.',
@@ -48,9 +46,12 @@
     return publications;
   };
 
+
+  var publications = renderPublication(PHOTOS_QUANTITY);
+
   window.data = {
     renderPublication: renderPublication,
-    PHOTOS_QUANTITY: PHOTOS_QUANTITY
+    publications: publications
   };
 
 })();

@@ -12,8 +12,7 @@
   };
 
 
-  var publications = window.data.renderPublication(window.data.PHOTOS_QUANTITY);
-  picturesBlock.appendChild(getUsersPhotos(publications));
+  picturesBlock.appendChild(getUsersPhotos(window.data.publications));
 
 })();
 

@@ -1,15 +1,15 @@
 'use strict';
 (function () {
   var VALUE_STEP = 25;
-  var controlSmaller = document.querySelector('.scale__control--smaller');
-  var controlBigger = document.querySelector('.scale__control--bigger');
-  var currentEffectImg = document.querySelector('.img-upload__preview');
-  var controlValue = document.querySelector('.scale__control--value');
   var MIN_VALUE = 25;
   var MAX_VALUE = 100;
   var MAX_HASHTAG = 5;
   var MAX_SYMBOLS = 20;
   var MIN_SYMBOLS = 1; // хеш-тег не может состоять только из одной решётки;
+  var controlSmaller = document.querySelector('.scale__control--smaller');
+  var controlBigger = document.querySelector('.scale__control--bigger');
+  var currentEffectImg = document.querySelector('.img-upload__preview');
+  var controlValue = document.querySelector('.scale__control--value');
   var uploadFile = document.querySelector('#upload-file'); // input type file
   var imgUploadOverlay = document.querySelector('.img-upload__overlay'); // оверлей с фоткой после change input type file
   var imgUploadCancel = document.querySelector('.img-upload__cancel'); // кнопка закрытия формы
@@ -29,7 +29,7 @@
     currentEffect.removeAttribute('class');
     currentEffect.removeAttribute('style');
     currentEffectImg.removeAttribute('style');
-    // debugger;
+
     for (var i = 0; i < inputs.length; i++) {
       inputs[i].checked = false;
     }
