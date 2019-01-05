@@ -22,6 +22,13 @@
   var commentsInput = document.querySelector('.text__description');
   var buttonSubmit = document.querySelector('.img-upload__submit');
   var textHashtag = document.querySelector('.text__hashtags');
+  var templateSuccess = document.querySelector('#success').content.querySelector('.success');
+  var templateError = document.querySelector('#error').content.querySelector('.error');
+  var main = document.querySelector('main');
+  var succcessButton = templateSuccess.querySelector('.success__button');
+  var errorButton = templateError.querySelectorAll('.error__button');
+  var errorMessagePopup = main.appendChild(templateError);
+  var successMessage = main.appendChild(templateSuccess);
 
   var resetForm = function () {
     var inputs = document.querySelectorAll('.effects__radio:checked');
@@ -184,13 +191,62 @@
     document.removeEventListener('keydown', onPopupEscPress);
   });
 
+  errorMessagePopup.classList.add('visually-hidden');
+  successMessage.classList.add('visually-hidden');
+
+  var closePopupEsc = function (evt) {
+    if (evt.keyCode === window.utils.ESC_KEYCODE) {
+      onClosePopup(errorMessagePopup);
+      onClosePopup(successMessage);
+    }
+  };
+
+
+  var openSuccessMessage = function () {
+    successMessage.classList.remove('visually-hidden');
+    succcessButton.addEventListener('click', function () {
+      onClosePopup(successMessage);
+    });
+    document.addEventListener('keydown', closePopupEsc);
+  };
+
+  var onClosePopup = function (element) {
+    element.classList.add('visually-hidden');
+    document.removeEventListener('keydown', closePopupEsc);
+  };
+
+
+  var openErrorMessage = function () {
+    errorMessagePopup.classList.remove('visually-hidden');
+    form.reset();
+    closePopup();
+    for (var i = 0; i < errorButton.length; i++) {
+      errorButton[i].addEventListener('click', function () {
+        onClosePopup(errorMessagePopup);
+      });
+    }
+    document.addEventListener('keydown', closePopupEsc);
+  };
+
+  var onSuccessClick = function () {
+    form.reset();
+    closePopup();
+    document.addEventListener('keydown', onPopupEscPress);
+    openSuccessMessage();
+  };
+
+  var form = document.querySelector('.img-upload__form');
+  form.addEventListener('submit', function (evt) {
+    window.backend.upload(new FormData(form), onSuccessClick, openErrorMessage);
+    evt.preventDefault();
+  });
 
   window.form = {
     setFilter: setFilter,
     filterPin: filterPin,
     pinLineWidth: pinLineWidth,
     effectLevelDepth: effectLevelDepth,
-    currentEffect: currentEffect
+    currentEffect: currentEffect,
   };
 
 })();
