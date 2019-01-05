@@ -22,12 +22,8 @@
         var commentItem = '<li class="social__comment"><img class="social__picture" src="img/avatar-' + window.utils.getRandomInteger(MIN_AVATAR_URL, MAX_AVATAR_URL) + '.svg" alt="Аватар комментатора фотографии" width="35" height="35"><p class="social__text">' + publication.comments[i].name + ' ' + publication.comments[i].message + '</p></li>';
         socialCommentList.insertAdjacentHTML('afterBegin', commentItem);
       }
-      // var commentItem = '<li class="social__comment"><img class="social__picture" src="img/avatar-' + window.utils.getRandomInteger(MIN_AVATAR_URL, MAX_AVATAR_URL) + '.svg" alt="Аватар комментатора фотографии"width="35" height="35"><p class="social__text">' + publication[i].name + '</p></li>';
-      console.log(publication.comments);
       socialСommentCount.classList.add('visually-hidden');
       loadComments.classList.add('visually-hidden');
-
-      // socialCommentList.insertAdjacentHTML('afterBegin', commentItem);
 
       // навешиваем обработчики
       var closeBigPicture = function () {

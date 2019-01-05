@@ -15,10 +15,6 @@
 
   };
 
-
-
-// errorHandler
-
-  window.backend.load(renderPublication, window.errorHandler); // + errorHandler
+  window.backend.load(renderPublication, window.errorHandler);
 
 })();
